@@ -4,9 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>晨 · AI时代个人说明书 · 快递单</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="fonts/self-host.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FFBB62'/%3E%3Cg%20fill='none'%20stroke='%232D2926'%20stroke-width='2'%20stroke-linejoin='round'%3E%3Cpath%20d='M7%2011%20L16%207%20L25%2011%20L16%2015%20Z'/%3E%3Cpath%20d='M7%2011%20V21%20L16%2025%20V15'/%3E%3Cpath%20d='M25%2011%20V21%20L16%2025'/%3E%3C/g%3E%3C/svg%3E">
+  <meta name="description" content="晨的 AI 时代个人说明书：一份用快递单包装的个人使用手册。拆开 7 个箱子，快速搞懂怎么和晨协作最高效——ta 是谁、怎么沟通、怎么给反馈、需要什么支持。">
+  <meta name="theme-color" content="#FFBB62">
+  <link rel="canonical" href="https://chen-github-io.pages.dev/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="晨 · AI时代个人说明书">
+  <meta property="og:description" content="一份用快递单包装的个人使用手册，拆开 7 个箱子搞懂怎么和晨高效协作。">
+  <meta property="og:url" content="https://chen-github-io.pages.dev/">
+  <meta property="og:image" content="https://chen-github-io.pages.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="晨 · AI时代个人说明书">
+  <meta name="twitter:description" content="一份用快递单包装的个人使用手册，拆开 7 个箱子搞懂怎么和晨高效协作。">
+  <meta name="twitter:image" content="https://chen-github-io.pages.dev/og-image.png">
   <style>
     :root {
       /* 新四色主题 */
@@ -36,7 +47,7 @@
     * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
     html, body { margin: 0; }
     body {
-      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', Roboto, sans-serif;
       background: var(--warm);
       background-image:
         radial-gradient(circle at 20% 10%, rgba(202,235,237,0.45) 0%, transparent 45%),
@@ -45,7 +56,7 @@
       color: var(--ink);
       min-height: 100vh;
     }
-    .font-heading { font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif; }
+    .font-heading { font-family: 'Space Grotesk', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
 
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-thumb { background: var(--sky); border-radius: 4px; }
@@ -406,10 +417,100 @@
     }
     @keyframes rippleAnim { to { transform: scale(2.8); opacity:0; } }
 
+    /* ============ 优化：进度 / 已拆 / 开箱动画 / TL;DR / CTA ============ */
+    /* 进度计数 */
+    .progress-pill {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:.76rem; font-weight:700; color:var(--accent-dark);
+      background:var(--ice); border:1.5px solid var(--sky);
+      padding:5px 12px; border-radius:999px; letter-spacing:.02em; white-space:nowrap;
+    }
+    .progress-pill b { font-family:'Space Grotesk',sans-serif; font-size:.86rem; }
+    .progress-pill .pp-check { color:var(--good-dark); font-weight:800; }
+
+    /* 已拆标记 */
+    .crate.opened::after {
+      content:"✓ 已拆"; position:absolute; top:8px; right:8px; z-index:6;
+      font-size:.6rem; font-weight:700; color:#fff;
+      background:var(--good-dark); padding:2px 7px; border-radius:999px;
+      box-shadow:0 2px 6px rgba(125,184,143,.5);
+    }
+    .crate.opened .cf-tape { opacity:.5; }
+
+    /* 点击开箱 脉冲提示 */
+    @keyframes hintPulse2 { 0%,100%{ opacity:.5; } 50%{ opacity:1; } }
+    .cf-hint { animation: hintPulse2 1.6s ease-in-out infinite; }
+
+    /* 箱子点击开启动画 */
+    .crate.opening { animation: crateOpen .44s cubic-bezier(.2,.8,.3,1); }
+    @keyframes crateOpen {
+      0%{ transform: scale(1); }
+      45%{ transform: scale(1.12) rotate(-2deg); }
+      100%{ transform: scale(1); }
+    }
+
+    /* 弹窗内容 stagger 进场 */
+    #modal.show .modal-body .anim-in { animation: cardIn .5s cubic-bezier(.2,.8,.3,1) both; }
+    @keyframes cardIn {
+      from { opacity:0; transform: translateY(14px); }
+      to { opacity:1; transform:none; }
+    }
+
+    /* 每箱一句话总结 banner */
+    .tldr-banner {
+      display:flex; gap:10px; align-items:flex-start;
+      background: linear-gradient(135deg, var(--sky), var(--ice));
+      border:1px solid rgba(99,186,217,.35);
+      border-radius:14px; padding:12px 14px; margin-bottom:16px;
+    }
+    .tldr-banner .tb-ic {
+      flex-shrink:0; width:26px; height:26px; border-radius:8px;
+      background: linear-gradient(135deg, var(--blue), var(--accent-dark));
+      color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.78rem;
+    }
+    .tldr-banner .tb-txt { font-size:.86rem; color:var(--ink); line-height:1.55; }
+    .tldr-banner .tb-txt b { color:var(--accent-dark); }
+
+    /* 全开庆祝条 */
+    .all-done {
+      max-width:1080px; margin:26px auto 0; text-align:center;
+      background: linear-gradient(135deg, var(--mint), var(--ice));
+      border:1.5px solid var(--good-dark);
+      border-radius:18px; padding:15px 20px;
+      font-weight:700; color:var(--good-dark); font-size:.96rem;
+      opacity:0; transform: translateY(10px); transition: all .5s;
+    }
+    .all-done.show { opacity:1; transform:none; }
+
+    /* 结尾 CTA */
+    .contact-card {
+      max-width:1080px; margin:22px auto 0;
+      background:var(--card-bg); border:1.5px solid var(--borderc);
+      border-radius:20px; padding:20px 22px; text-align:center;
+      box-shadow:0 10px 30px rgba(99,186,217,.10);
+    }
+    .contact-card h3 { font-family:'Space Grotesk',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif; margin:0 0 6px; font-size:1.08rem; color:var(--ink); }
+    .contact-card p { margin:0 0 14px; font-size:.84rem; color:var(--ink-2); }
+    .contact-chips { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+    .contact-chip {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:9px 16px; border-radius:999px; font-size:.84rem; font-weight:600;
+      background:var(--ice); color:var(--accent-dark); border:1.5px solid var(--sky);
+    }
+    .contact-chip b { color:var(--ink); font-weight:700; }
+
+    @media (max-width:380px){
+      .crate{ width:168px; height:168px; }
+      .crate-shadow{ width:140px; }
+      .cf-title{ font-size:1.3rem; }
+      .grid-bar{ flex-wrap:wrap; gap:8px; }
+    }
+
     @media (prefers-reduced-motion: reduce){
       *,*::before,*::after{
         animation-duration:.01ms !important;
         transition-duration:.01ms !important;
+        animation-delay:0ms !important;
       }
     }
   </style>
@@ -465,6 +566,7 @@
   <section id="screen-grid">
     <div class="grid-bar">
       <h2><span class="badge">7 箱</span> 拆开看看晨是谁</h2>
+      <span class="progress-pill" id="progress-pill"><b id="prog-done">0</b><span class="pp-check">/7</span> 已拆</span>
       <div style="display:flex; gap:8px;">
         <button class="mute-btn" id="mute-btn" title="点击音效开关">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6" opacity="0.5"/></svg>
@@ -477,6 +579,14 @@
       </div>
     </div>
     <div class="crate-grid" id="crate-grid"></div>
+    <div class="all-done" id="all-done">全部 7 箱拆完 · 你已认识完整的晨</div>
+    <div class="contact-card" id="contact-card">
+      <h3>想联系我？</h3>
+      <p>微信是我最常用的联系方式</p>
+      <div class="contact-chips">
+        <span class="contact-chip">微信：<b>sxzybw</b></span>
+      </div>
+    </div>
   </section>
 
   <!-- ===================== MODAL ===================== -->
@@ -704,14 +814,22 @@
 
     // ===== Sections data =====
     const SECTIONS = [
-      { no: '01', title: '身份定位', sub: '我是谁，从哪来，想去哪' },
-      { no: '02', title: '任务系统', sub: '适合做什么，怎么做最有效' },
-      { no: '03', title: '沟通系统', sub: '怎么跟我说话最有效' },
-      { no: '04', title: '反馈系统', sub: '怎么给我反馈我能听进去' },
-      { no: '05', title: '压力预警系统', sub: '我卡住时长什么样' },
-      { no: '06', title: '支持系统', sub: '我需要什么才能做得更好' },
-      { no: '07', title: '团队使用说明', sub: '把我放进团队怎么用' },
+      { no: '01', title: '身份定位', sub: '我是谁，从哪来，想去哪',
+        tldr: '理工科的技术脑 + 爱看故事的内容胃，对「AI + 内容」特别有感觉；想借这个项目攒出作品与方向。' },
+      { no: '02', title: '任务系统', sub: '适合做什么，怎么做最有效',
+        tldr: '目标清楚就执行力拉满；擅长沟通协调、组织落地。给我清楚的标准，我就是神射手。' },
+      { no: '03', title: '沟通系统', sub: '怎么跟我说话最有效',
+        tldr: '安排任务请一次说清目标 / 截止 / 标准 / 优先级；有问题先自己整理、带方案来问。' },
+      { no: '04', title: '反馈系统', sub: '怎么给我反馈我能听进去',
+        tldr: '要具体反馈：哪里不行、为什么、下一步怎么改；并区分「必须改」与「可优化」。' },
+      { no: '05', title: '压力预警系统', sub: '我卡住时长什么样',
+        tldr: '话变少 + 一直不改 = 我在压力里卡住了。明确优先级、给参考、先交初稿最有效。' },
+      { no: '06', title: '支持系统', sub: '我需要什么才能做得更好',
+        tldr: '我需要信息、资源、节奏三类支持：背景资料、AI 工具、明确的 DDL 与提交入口。' },
+      { no: '07', title: '团队使用说明', sub: '把我放进团队怎么用',
+        tldr: '适合负责「用 AI 把事做成」——AI 辅助开发 + 项目落地执行。标准给清、先初稿后优化。' },
     ];
+    const TLDR = Object.fromEntries(SECTIONS.map(s => [s.no, s.tldr]));
 
     // ===== Build CSS crates =====
     const grid = document.getElementById('crate-grid');
@@ -719,7 +837,7 @@
       const wrap = document.createElement('div');
       wrap.className = 'crate-wrap reveal';
       wrap.innerHTML =
-        '<div class="crate" data-no="' + s.no + '" tabindex="0" role="button" aria-label="打开 ' + s.title + '">' +
+        '<div class="crate" data-no="' + s.no + '" tabindex="0" role="button" aria-expanded="false" aria-label="打开 ' + s.title + '">' +
           '<div class="cf-tape"></div>' +
           '<div class="crate-overlay">' +
             '<span class="cf-no">NO.' + s.no + '</span>' +
@@ -774,17 +892,60 @@
     const modalNo = document.getElementById('modal-no');
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
+    const progDone = document.getElementById('prog-done');
+    const allDone = document.getElementById('all-done');
+    const opened = new Set();
+    let lastFocused = null;
+
+    function updateProgress() {
+      progDone.textContent = opened.size;
+      allDone.classList.toggle('show', opened.size === SECTIONS.length);
+    }
+
     function openModal(no) {
       const src = document.getElementById('c-' + no);
       if (!src) return;
+      const sec = SECTIONS.find(s => s.no === no);
       modalNo.textContent = 'NO.' + no;
-      modalTitle.textContent = SECTIONS.find(s => s.no === no).title;
-      modalBody.innerHTML = src.innerHTML;
+      modalTitle.textContent = sec.title;
+      // 顶部一句话总结 banner
+      const tldr = '<div class="tldr-banner anim-in" style="animation-delay:0s"><span class="tb-ic">i</span><div class="tb-txt"><b>一句话总结：</b>' + (TLDR[no] || '') + '</div></div>';
+      modalBody.innerHTML = tldr + src.innerHTML;
+      // 内容块 stagger 进场
+      const blocks = modalBody.querySelectorAll(':scope > .sec-stack > *, .tldr-banner');
+      blocks.forEach((b, i) => { b.classList.add('anim-in'); b.style.animationDelay = (i * 0.06) + 's'; });
       modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false');
       modalBody.scrollTop = 0;
+      // 标记已拆 + 开启动画
+      const crateEl = grid.querySelector('.crate[data-no="' + no + '"]');
+      if (crateEl) {
+        crateEl.classList.add('opened');
+        crateEl.setAttribute('aria-expanded', 'true');
+        crateEl.classList.add('opening');
+        setTimeout(() => crateEl.classList.remove('opening'), 440);
+      }
+      opened.add(no); updateProgress();
+      // 焦点管理
+      lastFocused = document.activeElement;
+      document.getElementById('modal-close').focus();
       playTick(520);
     }
-    function closeModal() { modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); }
+    function closeModal() {
+      if (!modal.classList.contains('show')) return;
+      modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true');
+      grid.querySelectorAll('.crate').forEach(c => c.setAttribute('aria-expanded', 'false'));
+      playTick(300);
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+    // 焦点陷阱：Tab 只在弹窗内循环
+    modal.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+      const f = modal.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])');
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
 
     grid.querySelectorAll('.crate').forEach(crate => {
       crate.addEventListener('click', (e) => { addRipple(crate, e); openModal(crate.dataset.no); });
